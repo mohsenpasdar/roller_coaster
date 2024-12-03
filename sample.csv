@@ -1,0 +1,5 @@
+formula,start_x,end_x
+x**2+1,-2,0
+cos(x),0,3*pi
+-1,pi+pi+pi,5*pi
+cos(x), 5*pi,7*pi
