@@ -4,7 +4,7 @@ import sympy as sp
 
 def validate_input_file(input_file: str) -> str:
     """
-    Validates the input file name and content.
+    This function validates the input file name and content.
 
     This function checks if the given input file:
     1. Has a .csv extension.
@@ -28,6 +28,22 @@ def validate_input_file(input_file: str) -> str:
     except FileNotFoundError:
         # File is not found.
         sys.exit(f"File '{input_file}' not found.")
+    
+    # If no errors are raised, the file is valid.
+    return 'Validation successful'
+
+def validate_output_file(output_file: str) -> str:
+    """
+    This function validates the output file name.
+
+    This function checks if the given input file has a ".svg" extension.
+
+    Args:
+    input_file (str): Path to the SVG file containing containing the final drawing of the roller coaster..
+    """
+    # Check if the file name has a .svg extension.
+    if not output_file.lower().endswith('.svg'):
+        sys.exit('The output file must be a SVG.')
     
     # If no errors are raised, the file is valid.
     return 'Validation successful'
@@ -222,15 +238,14 @@ def generate_roller_coaster():
         sys.exit('At least, for an x between two consecutive rows, one of the formulas does not provide ' +
                  "a smooth transition (i.e.: f'(x) != g'(x))!")
     # Prompt user for the output file name for the SVG drawing.
-    output_file = input('Enter the file name (including the extention) corresponding to the SVG ' +
+    output_file_name = input('Enter the file name (including the extention) corresponding to the SVG ' +
                         'file to be created, containing the final drawing of the roller coaster: ')
     
-    # Check if the file name has a .csv extension.
-    if not output_file.lower().endswith('.svg'):
-        sys.exit('The output file must be a SVG.')
+    # Check if the output file name has a '.svg' extension.
+    validate_output_file(output_file_name)
     
     # Generate and save the roller coaster drawing.
-    roller_coaster(formulas_df, output_file)
+    roller_coaster(formulas_df, output_file_name)
 
 # Execute the main function to generate the roller coaster by getting user input, validating it, and creating an SVG drawing.
 if __name__ == "__main__":

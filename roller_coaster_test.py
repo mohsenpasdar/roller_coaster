@@ -1,10 +1,9 @@
 import pytest
 import pandas as pd
-import numpy as np
 from roller_coaster import *
 
 def test_validate_input_file():
-    # if 'sample.csv' exists:
+    # Here we assume that 'sample.csv' exists in the same directory:
     assert validate_input_file('sample.csv') == 'Validation successful'
     
     # if extention is not 'csv':
@@ -16,6 +15,15 @@ def test_validate_input_file():
     with pytest.raises(SystemExit) as info:
         validate_input_file('nonexistent.csv')
     assert str(info.value) == "File 'nonexistent.csv' not found."
+
+def test_validate_output_file():
+    # If extention is 'svg':
+    assert validate_output_file('output.svg') == 'Validation successful'
+
+    # If extention is not 'svg':
+    with pytest.raises(SystemExit) as info:
+        validate_output_file('output.png')
+    assert str(info.value) == 'The output file must be a SVG.'
 
 valid_data = {
     'formula': ['x**2+1', 'cos(x)', '-1', 'cos(x)'],
@@ -70,10 +78,19 @@ def test_do_formulas_meet():
     dataframe_invalid2.at[1, 'formula'] = 'sin(x)'
     assert do_formulas_meet(dataframe_invalid2) is False
 
+def test_is_smooth_transition():
+    assert is_smooth_transition(dataframe_valid) is True
 
+    dataframe_invalid = dataframe_valid.copy()
+    dataframe_invalid.at[1, 'formula'] = 'cos(x)+x'
+    assert is_smooth_transition(dataframe_invalid) is False
+
+    dataframe_invalid2 = dataframe_valid.copy()
+    dataframe_invalid2.at[2, 'formula'] = '(x-3*pi)-1'
+    assert is_smooth_transition(dataframe_invalid2) is False
 
 dataframe_invalid = dataframe_valid.copy()
-dataframe_invalid.at[1, 'formula'] = 'cos(x)'
+dataframe_invalid.at[2, 'formula'] = '(x-3*pi)-1'
 print(dataframe_invalid)
 print(dataframe_valid)
     
