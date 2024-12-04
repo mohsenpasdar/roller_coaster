@@ -32,7 +32,7 @@ def validate_input_file(input_file: str) -> str:
     # If no errors are raised, the file is valid.
     return 'Validation successful'
 
-def are_valid_formula(df: pd.DataFrame) -> bool:
+def are_formulas_valid(df: pd.DataFrame) -> bool:
     """
     This function checks if all formulas in the DataFrame are valid mathematical expressions with 'x' as the only variable.
 
@@ -60,7 +60,7 @@ def are_valid_formula(df: pd.DataFrame) -> bool:
     # If all formulas are valid, return True.
     return True
 
-def end_larger_than_start(df: pd.DataFrame) -> bool:
+def is_end_larger_than_start(df: pd.DataFrame) -> bool:
     """
     This function checks if the ending value of 'x' in each row is larger than the starting value of 'x' for that row.
 
@@ -79,7 +79,7 @@ def end_larger_than_start(df: pd.DataFrame) -> bool:
     # If all checks pass, return True.
     return True
 
-def match_end_start(df: pd.DataFrame) -> bool:
+def do_ends_match_starts(df: pd.DataFrame) -> bool:
     """
     This function checks if the starting value of 'x' for each segment (except the first one) matches the ending value of 'x' from the previous segment.
 
@@ -98,7 +98,7 @@ def match_end_start(df: pd.DataFrame) -> bool:
     # If all start and end values match properly, return True.
     return True
 
-def are_formulas_meet(df: pd.DataFrame) -> bool:
+def do_formulas_meet(df: pd.DataFrame) -> bool:
     """
     This function checks if the end value of each formula in a row meets the start value of the formula in the next row.
 
@@ -199,21 +199,21 @@ def generate_roller_coaster():
     formulas_df = pd.read_csv(formulas_file_path)
     
     # Validate if all formulas in the DataFrame are valid.
-    if not are_valid_formula(formulas_df):
+    if not are_formulas_valid(formulas_df):
         sys.exit('At least, one of the formulas is not valid!')
 
     # Validate if the end value of 'x' is greater than the start value for each row.  
-    if not end_larger_than_start(formulas_df):
+    if not is_end_larger_than_start(formulas_df):
         sys.exit('At least, the ending value of x in one of the rows is not larger ' + 
                  'than the start value of x for the same row!')
     
     # Validate if the start value of 'x' matches the end value of 'x' in the previous row (except the first row).
-    if not match_end_start(formulas_df):
+    if not do_ends_match_starts(formulas_df):
         sys.exit('At least, the starting value of x in one of the rows (other than the first one) ' + 
                  "doesn't match the ending value of x in its previous row!")    
     
     # Validate if the end value of one formula matches the start value of the next formula.
-    if not are_formulas_meet(formulas_df):
+    if not do_formulas_meet(formulas_df):
         sys.exit('At least, for an x between two consecutive rows, the corresponding formulas (e.g.: f and g) ' +
                  'do not meet at the same location (i.e.: f(x) != g(x))!')
     
