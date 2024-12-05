@@ -144,3 +144,14 @@ def test_is_smooth_transition():
     dataframe_invalid3 = dataframe_valid.copy()
     dataframe_invalid3['formula'] = '1'
     assert is_smooth_transition(dataframe_invalid3) is True
+
+def test_generate_roller_coaster():
+    # Test a valid roller coaster generation (except the plot generation!)
+    dataframe_valid.to_csv('valid_sample.csv', index=False)
+    validate_input_file('valid_sample.csv')  # Should pass
+    df = pd.read_csv('valid_sample.csv')
+    assert are_formulas_valid(df) is True
+    assert is_end_larger_than_start(df) is True
+    assert do_ends_match_starts(df) is True
+    assert do_formulas_meet(df) is True
+    assert is_smooth_transition(df) is True
