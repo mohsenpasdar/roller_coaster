@@ -2,17 +2,46 @@ import pytest
 import pandas as pd
 from roller_coaster import *
 
+# Define valid test data with formulas, start_x, and end_x values for testing
+valid_data = {
+    'formula': ['x**2+1', 'cos(x)', '-1', 'cos(x)'],
+    'start_x': ['-2', '0', '3*pi', '5*pi'],
+    'end_x': ['0', '3*pi', '5*pi', '7*pi']
+}
+
+# Create a DataFrame from valid test data for use in testing the helper functions
+dataframe_valid = pd.DataFrame(valid_data)
+
 def test_validate_input_file():
     # Test if valid CSV file passes validation
-    # Here we assume that 'sample.csv' exists in the same directory:
-    assert validate_input_file('sample.csv') == 'Validation successful'
+    dataframe_valid.to_csv('valid_sample.csv', index=False)
+    assert validate_input_file('valid_sample.csv') == 'Validation successful'
+
+    # Test if CSV with a missing 'start_x' column fails
+    invalid_data = {
+        'formula': ['x**2+1', 'cos(x)', '-1', 'cos(x)'],
+        'end_x': ['0', '3*pi', '5*pi', '7*pi']
+    }
+
+    # Test if adding an extra irrelevant column passes validation
+    dataframe_extra = dataframe_valid.copy()
+    dataframe_extra['extra'] = [1, 2, 3, 4]
+    dataframe_extra.to_csv('extra_valid_sample.csv', index=False)
+    assert validate_input_file('extra_valid_sample.csv') == 'Validation successful'
+
+    dataframe_invalid = pd.DataFrame(invalid_data)
+    dataframe_invalid.to_csv('invalid_sample.csv', index=False)
+
+    with pytest.raises(SystemExit) as info:
+        validate_input_file('invalid_sample.csv')
+    assert str(info.value) == "The input file must contain headers: 'formula', 'start_x', and 'end_x'."
     
     # Test if non-CSV file raises error
     with pytest.raises(SystemExit) as info:
         validate_input_file('sample.csd')
     assert str(info.value) == 'The input file must be a CSV.'
     
-    # Test if non-existent file raises error
+    # Test if non-existent csv file raises error
     with pytest.raises(SystemExit) as info:
         validate_input_file('nonexistent.csv')
     assert str(info.value) == "File 'nonexistent.csv' not found."
@@ -25,16 +54,6 @@ def test_validate_output_file():
     with pytest.raises(SystemExit) as info:
         validate_output_file('output.png')
     assert str(info.value) == 'The output file must be a SVG.'
-
-# Define valid test data with formulas, start_x, and end_x values for testing
-valid_data = {
-    'formula': ['x**2+1', 'cos(x)', '-1', 'cos(x)'],
-    'start_x': ['-2', '0', '3*pi', '5*pi'],
-    'end_x': ['0', '3*pi', '5*pi', '7*pi']
-}
-
-# Create a DataFrame from valid test data for use in testing the helper functions
-dataframe_valid = pd.DataFrame(valid_data)
 
 def test_are_formulas_valid():
     # Test if all formulas in the valid DataFrame are correct
@@ -125,4 +144,3 @@ def test_is_smooth_transition():
     dataframe_invalid3 = dataframe_valid.copy()
     dataframe_invalid3['formula'] = '1'
     assert is_smooth_transition(dataframe_invalid3) is True
-
