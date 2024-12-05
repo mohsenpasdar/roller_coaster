@@ -50,20 +50,34 @@ def test_are_formulas_valid():
     dataframe_invalid2.at[1, 'formula'] = 'y * cos(x)'
     assert are_formulas_valid(dataframe_invalid2) is False
 
+    # Test if an empty formula fails
+    dataframe_invalid3 = dataframe_valid.copy()
+    dataframe_invalid3.at[0, 'formula'] = ''
+    assert are_formulas_valid(dataframe_invalid3) is False
+
+    # Test if non-mathematical string formula fails
+    dataframe_invalid2 = dataframe_valid.copy()
+    dataframe_invalid2.at[0, 'formula'] = 'not_a_formula'
+    assert are_formulas_valid(dataframe_invalid2) is False
 
 def test_is_end_larger_than_start():
     # Test if all end_x values are larger than start_x values in valid DataFrame
     assert is_end_larger_than_start(dataframe_valid) is True
 
-    # Test if start_x > end_x causes validation failure (row 0)
+    # Test if start_x == end_x causes failure (row 0)
     dataframe_invalid = dataframe_valid.copy()
-    dataframe_invalid.at[0, 'start_x'] = '1'
+    dataframe_invalid.at[0, 'end_x'] = '-2'
     assert is_end_larger_than_start(dataframe_invalid) is False
 
-    # Test if end_x <= start_x causes validation failure (row 3)
+    # Test if start_x > end_x causes validation failure (row 0)
     dataframe_invalid2 = dataframe_valid.copy()
-    dataframe_invalid2.at[3, 'end_x'] = '5*pi'
+    dataframe_invalid2.at[0, 'start_x'] = '1'
     assert is_end_larger_than_start(dataframe_invalid2) is False
+
+    # Test if end_x <= start_x causes validation failure (row 3)
+    dataframe_invalid3 = dataframe_valid.copy()
+    dataframe_invalid3.at[3, 'end_x'] = '5*pi'
+    assert is_end_larger_than_start(dataframe_invalid3) is False
 
 def test_do_ends_match_starts():
     # Test if start_x matches previous row's end_x for valid DataFrame
@@ -97,13 +111,18 @@ def test_is_smooth_transition():
     # Test if valid DataFrame has smooth transitions between segments
     assert is_smooth_transition(dataframe_valid) is True
 
-    # Test if changing the formula to disrupt the smooth transition at boundaries with adjacent rows causes failure (row 1)
+    # Test if derivative mismatch causes failure (row 1)
     dataframe_invalid = dataframe_valid.copy()
     dataframe_invalid.at[1, 'formula'] = 'cos(x)+x'
     assert is_smooth_transition(dataframe_invalid) is False
 
-    # Test if changing the formula to disrupt the smooth transition at boundaries with adjacent rows causes failure (row 2)
+    # Test if derivative mismatch causes failure (row 2)
     dataframe_invalid2 = dataframe_valid.copy()
     dataframe_invalid2.at[2, 'formula'] = '(x-3*pi)-1'
     assert is_smooth_transition(dataframe_invalid2) is False
+
+    # Test if transitioning between constant functions is smooth
+    dataframe_invalid3 = dataframe_valid.copy()
+    dataframe_invalid3['formula'] = '1'
+    assert is_smooth_transition(dataframe_invalid3) is True
 
