@@ -70,7 +70,7 @@ python roller_coaster.py
 ```
 
 The program will prompt you for:
-1. The name of the input CSV file (`sample.csv`).
+1. The name of the input CSV file (e.g., `sample.csv`).
 2. The name of the output SVG file to save the roller coaster plot (e.g., `output.svg`).
 
 Make sure the CSV file is in the correct format, as described above.
@@ -90,7 +90,7 @@ pip install pytest
 Then, run the tests:
 
 ```sh
-pytest
+python -m pytest
 ```
 
 ### Test Coverage
@@ -127,9 +127,4 @@ pytest
 
 ## License
 
-This project is licensed under the MIT License. Feel free to use, modify, and distribute it as you wish.
-
----
-
-Feel free to contribute to this project by submitting issues or pull requests. If you have any questions, please contact the project maintainer.
-
+Feel free to use, modify, and distribute this project as you wish.

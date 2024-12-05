@@ -12,6 +12,9 @@ def validate_input_file(input_file: str) -> str:
 
     Args:
     input_file (str): Path to the CSV file containing the roller coaster segment information.
+
+    Returns:
+    str: A success message if the input file is valid.
     """
     # Check if the file name has a .csv extension.
     if not input_file.lower().endswith('.csv'):
@@ -39,7 +42,10 @@ def validate_output_file(output_file: str) -> str:
     This function checks if the given input file has a ".svg" extension.
 
     Args:
-    input_file (str): Path to the SVG file containing containing the final drawing of the roller coaster..
+    input_file (str): Path to the SVG file containing containing the final drawing of the roller coaster.
+
+    Returns:
+    str: A success message if the output file is valid.
     """
     # Check if the file name has a .svg extension.
     if not output_file.lower().endswith('.svg'):
